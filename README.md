@@ -1,19 +1,26 @@
-# Packet-capture-and-analysis
+USAGE:
+    pf [FLAGS] [OPTIONS] [ARGS]
 
-./libpcap -l   获取网络接口名字和掩码等信息
+FLAGS:
+    -h, --help           Prints help information
+    -i, --ignore-case    Regular expression matching ignore case
+    -l, --list-device    List device, view device status
+    -m, --multiline      Regular expression matching don't do multiline match (do single-line match instead)
+    -p, --promisc        Set promiscuous mode on or off. By default, this is on
+    -r, --raw            Record raw packet
+    -V, --version        Prints version information
+    -v, --verb           Verbose mode (-v, -vv, -vvv, etc.)
 
-./libpcap -a        以太网数据报捕获
+OPTIONS:
+    -x, --amplify <amplify>      Set the package magnification, by default, the package does not do enlargement
+                                 processing, and it only takes effect when this parameter is greater than 1 [default: 1]
+    -d, --dev <device>           Opens a capture handle for a device [default: ]
+    -M, --matcher <matcher>      Specify a BPF filter, only match the target package [default: ]
+    -o, --output <output>        Save matched packets in pcap format to pcap file, if there is no matching rule, the
+                                 default is to cap the full package [default: /tmp/0.pcap]
+    -s, --snap-len <snap-len>    Set the snaplen size (the maximum length of a packet captured into the buffer). Useful
+                                 if you only want certain headers, but not the entire packet [default: 65535]
 
-./libpcap -a -n 1   捕获一个数据包
-
-./libpcap -a -n -1  持续捕获数据包
-
-./libpcap -r    ARP数据包捕获
-
-./libpcap -i    IP数据包捕获
-
-./libpcap -t    TCP数据包捕获
-
-./libpcap -u    UDP数据包捕获
-
-./libpcap -m    ICMP数据包捕获
+ARGS:
+    <pattern>    Specify a regular expression for matching data [default: ]
+    <FILE>...    Files is read packet stream from pcap format files
