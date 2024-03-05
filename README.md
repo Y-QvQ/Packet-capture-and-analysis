@@ -1,26 +1,53 @@
-USAGE:
-    pf [FLAGS] [OPTIONS] [ARGS]
+### Options:
 
-FLAGS:
-    -h, --help           Prints help information
-    -i, --ignore-case    Regular expression matching ignore case
-    -l, --list-device    List device, view device status
-    -m, --multiline      Regular expression matching don't do multiline match (do single-line match instead)
-    -p, --promisc        Set promiscuous mode on or off. By default, this is on
-    -r, --raw            Record raw packet
-    -V, --version        Prints version information
-    -v, --verb           Verbose mode (-v, -vv, -vvv, etc.)
+- `-h, --help`: Display this help message.
+- `-l, --list`: List all available network interfaces.
+- `-f, --find`: Execute network element discovery.
+- `-s, --statistics`: Display packet statistics.
+      ifconfig eth1 promisc
+      ifconfig eth1 -promisc
+- `-a, --all`: Capture all traffic on the specified interface.
+- `-e, --ethernet`: Display Ethernet header information.
+- `-d, --data`: Display raw packet data in hexadecimal and ASCII.
 
-OPTIONS:
-    -x, --amplify <amplify>      Set the package magnification, by default, the package does not do enlargement
-                                 processing, and it only takes effect when this parameter is greater than 1 [default: 1]
-    -d, --dev <device>           Opens a capture handle for a device [default: ]
-    -M, --matcher <matcher>      Specify a BPF filter, only match the target package [default: ]
-    -o, --output <output>        Save matched packets in pcap format to pcap file, if there is no matching rule, the
-                                 default is to cap the full package [default: /tmp/0.pcap]
-    -s, --snap-len <snap-len>    Set the snaplen size (the maximum length of a packet captured into the buffer). Useful
-                                 if you only want certain headers, but not the entire packet [default: 65535]
+### Interface:
 
-ARGS:
-    <pattern>    Specify a regular expression for matching data [default: ]
-    <FILE>...    Files is read packet stream from pcap format files
+- `-i, --interface`: Specify the network interface to capture traffic.
+  Example: `-i eth0`
+
+### Rule:
+
+- `-r, --rule`: Specify a BPF (Berkeley Packet Filter) rule to filter captured packets.
+  Available rules:
+  - all
+  - ip
+  - ip6
+  - arp
+  - tcp
+  - udp
+  - icmp
+  - ip src [SOURCE_IP]
+  - ip dst [DESTINATION_IP]
+    Replace [SOURCE_IP] and [DESTINATION_IP] with valid IP addresses.
+    Example: `-r "ip src 192.168.1.1"`
+
+### Examples:
+
+1. Capture all traffic on eth0 with Ethernet and packet data:
+   ipdump -a -e -d -i eth0
+
+2. Capture only IPv4 TCP traffic on eth1:
+   ipdump -i eth1 -r tcp
+
+3. Execute network element discovery:
+   ipdump -f
+
+4. Display packet statistics:
+   ipdump -s
+
+
+5. Display help information:
+   ipdump -h
+
+6. List all available network interfaces:
+   ipdump -l
