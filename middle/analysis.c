@@ -56,9 +56,11 @@ void printIPv4(const unsigned char *packet_content)
 
     ipv4_hdr *ipv4 = (ipv4_hdr *)(packet_content + eth_len);
 
-    printf("\tip_header_len:%d\n"
-           "\tip_len:%d\n",
-           ipv4->header_len, ipv4->total_len);
+    printf("\tip_header_len: %d\n"
+           "\tip_len: %d\n"
+           "\tip_tos: 0x%x\n"
+           "\tip_flags: 0x%x\n",
+           ipv4->header_len, ipv4->total_len, ipv4->tos, ipv4->flags);
 
     unsigned char *saddr = (unsigned char *)&ipv4->sourceIP; // 网络字节序转换成主机字节序
     unsigned char *daddr = (unsigned char *)&ipv4->destIP;

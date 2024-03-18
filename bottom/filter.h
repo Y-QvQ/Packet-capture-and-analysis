@@ -2,7 +2,6 @@
 #define FILTER_H
 #include <linux/filter.h>
 #include <linux/if_ether.h>
-#include <linux/ip.h>
 #include <linux/tcp.h>
 #include <stdio.h>
 #include <stdlib.h>

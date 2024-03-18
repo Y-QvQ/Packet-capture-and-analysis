@@ -10,18 +10,22 @@
 #include <sys/stat.h>
 #include <netinet/in.h>
 #include <net/if.h>
+#include <arpa/inet.h>
+#include <sys/ioctl.h>
 
-
-// Define a structure to hold interface information
 struct InterfaceInfo {
-    char name[IFNAMSIZ];  // IFNAMSIZ is the size of interface names
-    char description[256];  // Adjust size as needed
-    char ip_address[INET6_ADDRSTRLEN];
-    char netmask[INET6_ADDRSTRLEN];
-    struct InterfaceInfo* next;
+    char name[IFNAMSIZ];
+    char description[256];
+    char ipAddress[INET_ADDRSTRLEN];
+    char netmask[INET_ADDRSTRLEN];
+    char broadcast[INET_ADDRSTRLEN];
+    char inet6Address[INET6_ADDRSTRLEN];
+    struct InterfaceInfo *next;
 };
+
 
 struct InterfaceInfo *getInterfaces();
 void freeInterfaces(struct InterfaceInfo *firstInterface);
+void printAllInterfaces(struct InterfaceInfo *firstInterface);
 
  #endif

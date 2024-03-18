@@ -1,4 +1,6 @@
 #include "filter.h"
+
+//tcpdump rule -dd生成bpf_code
 struct sock_filter all_code[] = {{0x6, 0, 0, 0x00040000}};
 struct sock_filter ip_code[] = {{0x28, 0, 0, 0x0000000c},
                                 {0x15, 0, 1, 0x00000800},
@@ -103,6 +105,21 @@ void load_bpf_filter(int sockfd, const char *rule, char *dev)
         bpf_program.len = 1;
         bpf_program.filter = all_code;
     }
+    else if (strncmp(rule, "ip src ", 7) == 0)
+    {
+
+        const char *ip_str = rule;
+        ip_str += 7;
+        bpf_program.len = 6;
+        bpf_program.filter = ip_src(ipv4_str_to_hex(ip_str));
+    }
+    else if (strncmp(rule, "ip dst ", 7) == 0)
+    {
+        const char *ip_str = rule;
+        ip_str += 7;
+        bpf_program.len = 6;
+        bpf_program.filter = ip_dst(ipv4_str_to_hex(ip_str));
+    }
     else if (strcmp(rule, "ip") == 0)
     {
         bpf_program.len = 4;
@@ -132,21 +149,6 @@ void load_bpf_filter(int sockfd, const char *rule, char *dev)
     {
         bpf_program.len = 6;
         bpf_program.filter = icmp_code;
-    }
-    else if (strncmp(rule, "ip src ", 7) == 0)
-    {
-
-        const char *ip_str = rule;
-        ip_str += 7;
-        bpf_program.len = 6;
-        bpf_program.filter = ip_src(ipv4_str_to_hex(ip_str));
-    }
-    else if (strncmp(rule, "ip dst ", 7) == 0)
-    {
-        const char *ip_str = rule;
-        ip_str += 7;
-        bpf_program.len = 6;
-        bpf_program.filter = ip_dst(ipv4_str_to_hex(ip_str));
     }
     else
     {

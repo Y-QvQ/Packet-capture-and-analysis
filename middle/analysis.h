@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <arpa/inet.h>
 #include <stdlib.h>
+#include <netinet/ip_icmp.h>
 
 #define NONE "\e[0m"      // 清除颜色，即之后的打印为正常输出，之前的不受影响
 #define YELLOW "\e[1;33m" // 鲜黄

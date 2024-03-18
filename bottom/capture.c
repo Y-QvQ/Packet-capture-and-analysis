@@ -1,14 +1,14 @@
 #include "capture.h"
 #include "filter.h"
 #include "../middle/analysis.h"
+#include "../upper/findHost.h"
+#include "../upper/statistics.h"
 
-void packet_handler(const unsigned char *packet_content, int packet_len, int displayEthernet, int displayHexAscii)
+void typeAnalysis(const unsigned char *packet_content, int displayEthernet, int displayHexAscii)
 {
     eth_hdr *ethernet_protocol = (eth_hdr *)packet_content;
     unsigned short ethernet_type = ntohs(ethernet_protocol->eth_type);
     int length = eth_len;
-
-    printf("----------------------------------------------------\n");
 
     if (displayEthernet)
     {
@@ -65,8 +65,45 @@ void packet_handler(const unsigned char *packet_content, int packet_len, int dis
         printData(packet_content, length);
     }
 }
+void typeFind(const unsigned char *packet_content)
+{
+    eth_hdr *ethernet_protocol = (eth_hdr *)packet_content;
+    initializeDiscoveredNetworkElements("findHost.txt");
+    addNetworkElement(ethernet_protocol->src_mac);
+    addNetworkElement(ethernet_protocol->dst_mac);
 
-void start_capture(const char *interface, char *rule, int displayEthernet, int displayHexAscii)
+    printDiscoveredNetworkElementsToFile("findHost.txt");
+    printDiscoveredNetworkElements();
+}
+void typeStatistics(const unsigned char *packet_content)
+{
+    setEndTime();
+    updateCounters(packet_content);
+    printStatistics();
+}
+void packet_handler(const unsigned char *packet_content, int packet_len, int dealType, int displayEthernet, int displayHexAscii)
+{
+    printf("----------------------------------------------------\n");
+
+    switch (dealType)
+    {
+    case 0:
+        typeAnalysis(packet_content, displayEthernet, displayHexAscii);
+        break;
+    case 1:
+        typeFind(packet_content);
+        break;
+    case 2:
+        typeStatistics(packet_content);
+        break;
+    default:
+        fprintf(stderr, "Invalid dealType: %d\n", dealType);
+        exit(EXIT_FAILURE);
+        break;
+    }
+}
+
+void start_capture(const char *interface, char *rule, int dealType, int displayEthernet, int displayHexAscii)
 {
     int sockfd;
     struct sockaddr_ll sa;
@@ -118,7 +155,7 @@ void start_capture(const char *interface, char *rule, int displayEthernet, int d
     //     exit(EXIT_FAILURE);
     // }
 
-
+    setStartTime();
     // Start capturing packets (loop until interrupted)
     while (1)
     {
@@ -130,12 +167,11 @@ void start_capture(const char *interface, char *rule, int displayEthernet, int d
             exit(EXIT_FAILURE);
         }
 
+        
         // Call the packet handler
-        packet_handler(buffer, packet_len, displayEthernet, displayHexAscii);
+        packet_handler(buffer, packet_len, dealType, displayEthernet, displayHexAscii);
     }
 
     // Close the socket (may not be reached in an infinite loop)
     close(sockfd);
 }
-
-
