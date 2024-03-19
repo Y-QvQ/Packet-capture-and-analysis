@@ -62,25 +62,6 @@ void send_arp(const char *data)
 
        memcpy(args->destination_ip, target_ip, IPv4_ADDR_LEN);
 
-       args->destination_port = 21;
-
-       printf("Sending ARP Packet:\n");
-       printf("Ethernet Header:\n");
-       printf("Source MAC: %02x:%02x:%02x:%02x:%02x:%02x\n", eth->src_mac[0], eth->src_mac[1], eth->src_mac[2], eth->src_mac[3], eth->src_mac[4], eth->src_mac[5]);
-       printf("Destination MAC: %02x:%02x:%02x:%02x:%02x:%02x\n", eth->dst_mac[0], eth->dst_mac[1], eth->dst_mac[2], eth->dst_mac[3], eth->dst_mac[4], eth->dst_mac[5]);
-       printf("Ethernet Type: 0x%04x\n", ntohs(eth->eth_type));
-
-       printf("ARP Header:\n");
-       printf("Hardware Type: 0x%04x\n", ntohs(arp->hardware_type));
-       printf("Protocol Type: 0x%04x\n", ntohs(arp->protocol_type));
-       printf("Hardware Len: %d\n", arp->hardware_len);
-       printf("Protocol Len: %d\n", arp->protocol_len);
-       printf("Opcode: 0x%04x\n", ntohs(arp->opcode));
-       printf("Sender MAC: %02x:%02x:%02x:%02x:%02x:%02x\n", arp->sender_mac[0], arp->sender_mac[1], arp->sender_mac[2], arp->sender_mac[3], arp->sender_mac[4], arp->sender_mac[5]);
-       printf("Sender IP: %d.%d.%d.%d\n", arp->sender_ip[0], arp->sender_ip[1], arp->sender_ip[2], arp->sender_ip[3]);
-       printf("Target MAC: %02x:%02x:%02x:%02x:%02x:%02x\n", arp->target_mac[0], arp->target_mac[1], arp->target_mac[2], arp->target_mac[3], arp->target_mac[4], arp->target_mac[5]);
-       printf("Target IP: %d.%d.%d.%d\n", arp->target_ip[0], arp->target_ip[1], arp->target_ip[2], arp->target_ip[3]);
-
        unsigned char *packet = (unsigned char *)eth;
 
        send_packets(args, packet, -1,eth_len+arp_len);
