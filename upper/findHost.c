@@ -15,11 +15,13 @@ void initializeDiscoveredNetworkElements(const char *filename)
 
         while (fgets(line, sizeof(line), file) != NULL)
         {
-            unsigned char mac[ETH_ALEN];
-            if (sscanf(line, "%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx",
-                       &mac[0], &mac[1], &mac[2], &mac[3], &mac[4], &mac[5]) == ETH_ALEN)
+            unsigned char mac[MAC_ADDR_LEN];
+            unsigned char ipv4[IPv4_ADDR_LEN];
+if (sscanf(line, "%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx %hhu.%hhu.%hhu.%hhu",
+                       &mac[0], &mac[1], &mac[2], &mac[3], &mac[4], &mac[5],
+                       &ipv4[0], &ipv4[1], &ipv4[2], &ipv4[3]) == MAC_ADDR_LEN + IPv4_ADDR_LEN)
             {
-                addNetworkElement(mac);
+                addNetworkElement(mac, ipv4);
             }
         }
 
@@ -33,7 +35,7 @@ int isDiscovered(const unsigned char *macAddress)
 
     while (current != NULL)
     {
-        if (memcmp(current->macAddress, macAddress, ETH_ALEN) == 0)
+        if (memcmp(current->macAddress, macAddress, MAC_ADDR_LEN) == 0)
         {
             return 1; // Discovered
         }
@@ -43,7 +45,7 @@ int isDiscovered(const unsigned char *macAddress)
     return 0; // Not discovered
 }
 
-void addNetworkElement(const unsigned char *macAddress)
+void addNetworkElement(const unsigned char *macAddress, const unsigned char *ipv4Address)
 {
     // Check if the MAC address is already discovered
     if (!isDiscovered(macAddress))
@@ -55,7 +57,8 @@ void addNetworkElement(const unsigned char *macAddress)
             exit(EXIT_FAILURE);
         }
 
-        memcpy(newElement->macAddress, macAddress, ETH_ALEN);
+        memcpy(newElement->macAddress, macAddress, MAC_ADDR_LEN);
+        memcpy(newElement->ipv4Address, ipv4Address, IPv4_ADDR_LEN);
         newElement->next = discoveredNetworkElements;
         discoveredNetworkElements = newElement;
     }
@@ -75,9 +78,12 @@ void printDiscoveredNetworkElementsToFile(const char *filename)
 
     while (current != NULL)
     {
-        fprintf(file, "%02X:%02X:%02X:%02X:%02X:%02X\n",
+        fprintf(file, "%02X:%02X:%02X:%02X:%02X:%02X ",
                 current->macAddress[0], current->macAddress[1], current->macAddress[2],
                 current->macAddress[3], current->macAddress[4], current->macAddress[5]);
+        fprintf(file, "%d.%d.%d.%d\n",
+                current->ipv4Address[0], current->ipv4Address[1], current->ipv4Address[2], current->ipv4Address[3]);
+
         current = current->next;
     }
 
@@ -93,6 +99,8 @@ void printDiscoveredNetworkElements()
         printf("Discovered MAC: %02X:%02X:%02X:%02X:%02X:%02X\n",
                current->macAddress[0], current->macAddress[1], current->macAddress[2],
                current->macAddress[3], current->macAddress[4], current->macAddress[5]);
+        printf("Discovered IP: %d.%d.%d.%d\n\n",
+               current->ipv4Address[0], current->ipv4Address[1], current->ipv4Address[2], current->ipv4Address[3]);
         current = current->next;
     }
     printf("Host Count:%d\n", getDiscoveredHostCount());

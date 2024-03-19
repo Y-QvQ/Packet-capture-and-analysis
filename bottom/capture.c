@@ -68,12 +68,16 @@ void typeAnalysis(const unsigned char *packet_content, int displayEthernet, int 
 void typeFind(const unsigned char *packet_content)
 {
     eth_hdr *ethernet_protocol = (eth_hdr *)packet_content;
-    initializeDiscoveredNetworkElements("findHost.txt");
-    addNetworkElement(ethernet_protocol->src_mac);
-    addNetworkElement(ethernet_protocol->dst_mac);
+    ipv4_hdr *ipv4 = (ipv4_hdr *)(packet_content + eth_len);
+    if (ntohs(ethernet_protocol->eth_type) == ETHERTYPE_IPv4)
+    {
+        initializeDiscoveredNetworkElements("findHost.txt");
+        addNetworkElement(ethernet_protocol->src_mac, ipv4->sourceIP);
+        addNetworkElement(ethernet_protocol->dst_mac, ipv4->destIP);
 
-    printDiscoveredNetworkElementsToFile("findHost.txt");
-    printDiscoveredNetworkElements();
+        printDiscoveredNetworkElementsToFile("findHost.txt");
+        printDiscoveredNetworkElements();
+    }
 }
 void typeStatistics(const unsigned char *packet_content)
 {
@@ -167,7 +171,6 @@ void start_capture(const char *interface, char *rule, int dealType, int displayE
             exit(EXIT_FAILURE);
         }
 
-        
         // Call the packet handler
         packet_handler(buffer, packet_len, dealType, displayEthernet, displayHexAscii);
     }
