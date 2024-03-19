@@ -17,7 +17,7 @@ void typeAnalysis(const unsigned char *packet_content, int displayEthernet, int 
 
     switch (ethernet_type)
     {
-    case ETHERTYPE_IPv4:
+    case ETHERTYPE_IP:
         printIPv4(packet_content);
         length += ipv4_len;
         ipv4_hdr *ipv4 = (ipv4_hdr *)(packet_content + eth_len);
@@ -47,7 +47,7 @@ void typeAnalysis(const unsigned char *packet_content, int displayEthernet, int 
             printf("Protocol Unknown\n");
         }
         break;
-    case ETHERTYPE_IPv6:
+    case ETHERTYPE_IPV6:
         printIPv6(packet_content);
         length += ipv6_len;
         break;
@@ -69,7 +69,7 @@ void typeFind(const unsigned char *packet_content)
 {
     eth_hdr *ethernet_protocol = (eth_hdr *)packet_content;
     ipv4_hdr *ipv4 = (ipv4_hdr *)(packet_content + eth_len);
-    if (ntohs(ethernet_protocol->eth_type) == ETHERTYPE_IPv4)
+    if (ntohs(ethernet_protocol->eth_type) == ETHERTYPE_IP)
     {
         initializeDiscoveredNetworkElements("findHost.txt");
         addNetworkElement(ethernet_protocol->src_mac, ipv4->sourceIP);

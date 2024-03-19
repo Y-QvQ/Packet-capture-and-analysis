@@ -193,7 +193,7 @@ void printARP(const unsigned char *packet_content)
 void printData(const unsigned char *packet_content,int length){
     for (int i = 0; *(packet_content + length + i) != '\0'; i++)
     {
-        printf("%02x ", *(packet_content + eth_len + ipv6_len + i));
+        printf("%02x ", *(packet_content + length + i));
 
         // if (i == 250)
         // {

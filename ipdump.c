@@ -9,14 +9,17 @@ int main(int argc, char *argv[])
     int dealType = 0;
     int displayEthernet = 0;
     int displayHexAscii = 0;
+    int sendPacket = 0;
+    int atkType = 0;
     char *interfaceName = NULL;
     char *rule = "";
+    char *data = "";
 
     struct InterfaceInfo *interfaces = getInterfaces();
     struct InterfaceInfo *current = interfaces;
     interfaceName = current->name;
 
-    while ((opt = getopt(argc, argv, "hlfsaedi:r:")) != -1)
+    while ((opt = getopt(argc, argv, "hlfsaedi:r:xA:")) != -1)
     {
         switch (opt)
         {
@@ -47,15 +50,30 @@ int main(int argc, char *argv[])
         case 'r':
             rule = optarg;
             break;
+        case 'x':
+            sendPacket = 1;
+            break;
+        case 'A':
+            data = optarg;
+            atkType=1;
+            break;
         default:
             // Handle invalid arguments or display usage
             fprintf(stderr, "Invalid option: %c\n", opt);
             exit(EXIT_FAILURE);
         }
     }
-    // printf("%d %d %s\n", displayEthernet, displayHexAscii,rule);
-
-    start_capture(interfaceName, rule, dealType, displayEthernet, displayHexAscii);
+    if (sendPacket == 1)
+    {
+        if (atkType == 1)
+        {
+            send_arp(data);
+        }
+    }
+    else
+    {
+        start_capture(interfaceName, rule, dealType, displayEthernet, displayHexAscii);
+    }
 
     freeInterfaces(interfaces);
 
@@ -73,7 +91,7 @@ void printHelp()
     printf("    -a, --all              Capture all traffic on the specified interface.\n");
     printf("    -e, --ethernet         Display Ethernet header information.\n");
     printf("    -d, --data             Display raw packet data in hexadecimal and ASCII.\n\n");
-    
+
     printf("INTERFACE:\n");
     printf("    -i, --interface        Specify the network interface to capture traffic.\n");
     printf("                           Example: -i eth0\n\n");
@@ -107,4 +125,3 @@ void printHelp()
     printf("    6. List all available network interfaces:\n");
     printf("       ipdump -l\n");
 }
-

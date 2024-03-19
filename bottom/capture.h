@@ -5,7 +5,6 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <netpacket/packet.h>
 #include <net/if.h>
 #include <unistd.h>
 

@@ -29,7 +29,7 @@ void updateCounters(const unsigned char *packet_content)
 
     switch (ethernet_type)
     {
-    case ETHERTYPE_IPv4:
+    case ETHERTYPE_IP:
         totalIpPackets++;
         ipv4_hdr *ipv4 = (ipv4_hdr *)(packet_content + length);
         length += ipv4_len;
@@ -66,7 +66,7 @@ void updateCounters(const unsigned char *packet_content)
             break;
         }
         break;
-    case ETHERTYPE_IPv6:
+    case ETHERTYPE_IPV6:
         totalIpv6Packets++;
         ipv6_hdr *ipv6 = (ipv6_hdr *)(packet_content + length);
         length += ipv6_len;

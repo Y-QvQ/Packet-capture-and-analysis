@@ -6,9 +6,6 @@
 #include <string.h>
 #include <netinet/ether.h>
 #include "../middle/analysis.h"
-
-#define MAC_ADDR_LEN 6
-#define IPv4_ADDR_LEN 4
 struct NetworkElement
 {
     unsigned char macAddress[MAC_ADDR_LEN];

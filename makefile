@@ -8,7 +8,7 @@ BIN_DIR = .
 # Source files for each component
 BOTTOM_SRC = $(wildcard bottom/*.c)
 MIDDLE_SRC = $(wildcard middle/*.c)
-UPPER_SRC = $(wildcard upper/*.c)
+UPPER_SRC = $(wildcard upper/*.c) $(wildcard upper/attack/*.c)
 INTERFACE_INFO_SRC = $(wildcard bottom/interfaceInfo/*.c)
 IPDUMP_SRC = ipdump.c
 

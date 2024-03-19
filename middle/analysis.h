@@ -5,17 +5,21 @@
 #include <arpa/inet.h>
 #include <stdlib.h>
 #include <netinet/ip_icmp.h>
+#include <net/ethernet.h>
 
 #define NONE "\e[0m"      // 清除颜色，即之后的打印为正常输出，之前的不受影响
 #define YELLOW "\e[1;33m" // 鲜黄
 #define L_BLUE "\e[1;34m" // 亮蓝，偏白灰
 
+#define MAC_ADDR_LEN 6
+#define IPv4_ADDR_LEN 4
+
 // 数据包最前面的信息, Mac头部,总长度14字节,然后通过eth_type来解析包后面的内容
 typedef struct eth_hdr
 {
-#define ETHERTYPE_IPv4 (0x0800)
-#define ETHERTYPE_IPv6 (0x86DD)
-#define ETHERTYPE_ARP (0x0806)
+// #define ETHERTYPE_IPv4 (0x0800)
+// #define ETHERTYPE_IPv6 (0x86DD)
+// #define ETHERTYPE_ARP (0x0806)
 
     u_char dst_mac[6]; // 目标mac地址
     u_char src_mac[6]; // 源mac地址
