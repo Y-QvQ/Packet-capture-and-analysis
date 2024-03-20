@@ -1,8 +1,4 @@
 #include "capture.h"
-#include "filter.h"
-#include "../middle/analysis.h"
-#include "../upper/findHost.h"
-#include "../upper/statistics.h"
 
 void typeAnalysis(const unsigned char *packet_content, int displayEthernet, int displayHexAscii)
 {
@@ -86,7 +82,7 @@ void typeStatistics(const unsigned char *packet_content)
     updateCounters(packet_content);
     printStatistics();
 }
-void packet_handler(const unsigned char *packet_content, int packet_len, int dealType, int displayEthernet, int displayHexAscii)
+void packet_handler(const unsigned char *packet_content, int packet_len, int dealType, int displayEthernet, int displayHexAscii, char *data)
 {
     printf("----------------------------------------------------\n");
 
@@ -101,6 +97,25 @@ void packet_handler(const unsigned char *packet_content, int packet_len, int dea
     case 2:
         typeStatistics(packet_content);
         break;
+    case 12:
+        unsigned char *packet = (unsigned char *)packet_content;
+        ipv4_hdr *ipv4_header = (ipv4_hdr *)(packet + eth_len);
+        udp_hdr *udp_header = (udp_hdr *)(packet + eth_len + ipv4_len);
+
+        if (udp_header->sport == htons(53) || udp_header->dport == htons(53)) // 判断是否为dns包
+        {
+            unsigned char network_ip[IPv4_ADDR_LEN], dns_ip[IPv4_ADDR_LEN];
+            if (sscanf(data, "%hhu.%hhu.%hhu.%hhu %hhu.%hhu.%hhu.%hhu",
+                       &network_ip[0], &network_ip[1], &network_ip[2], &network_ip[3], &dns_ip[0], &dns_ip[1], &dns_ip[2], &dns_ip[3]) != 2 * IPv4_ADDR_LEN)
+            {
+                fprintf(stderr, "Error parsing data\n");
+            }
+            if (memcmp(ipv4_header->destIP, network_ip, IPv4_ADDR_LEN) == 0) // 判断是否为发往指定网关的包
+            {
+                send_dns(packet, dns_ip);
+            }
+        }
+        break;
     default:
         fprintf(stderr, "Invalid dealType: %d\n", dealType);
         exit(EXIT_FAILURE);
@@ -108,7 +123,7 @@ void packet_handler(const unsigned char *packet_content, int packet_len, int dea
     }
 }
 
-void start_capture(const char *interface, char *rule, int dealType, int displayEthernet, int displayHexAscii)
+void start_capture(const char *interface, char *rule, int dealType, int displayEthernet, int displayHexAscii, char *data)
 {
     int sockfd;
     struct sockaddr_ll sa;
@@ -159,7 +174,6 @@ void start_capture(const char *interface, char *rule, int dealType, int displayE
     //     fprintf(stderr, "Error code: %d\n", errno);
     //     exit(EXIT_FAILURE);
     // }
-
     setStartTime();
     // Start capturing packets (loop until interrupted)
     while (1)
@@ -171,9 +185,8 @@ void start_capture(const char *interface, char *rule, int dealType, int displayE
             close(sockfd);
             exit(EXIT_FAILURE);
         }
-
         // Call the packet handler
-        packet_handler(buffer, packet_len, dealType, displayEthernet, displayHexAscii);
+        packet_handler(buffer, packet_len, dealType, displayEthernet, displayHexAscii, data);
     }
 
     // Close the socket (may not be reached in an infinite loop)

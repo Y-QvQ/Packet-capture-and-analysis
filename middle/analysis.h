@@ -1,6 +1,6 @@
- #ifndef ANALYSIS_H
- #define  ANALYSIS_H
- 
+#ifndef ANALYSIS_H
+#define ANALYSIS_H
+
 #include <stdio.h>
 #include <arpa/inet.h>
 #include <stdlib.h>
@@ -17,9 +17,9 @@
 // 数据包最前面的信息, Mac头部,总长度14字节,然后通过eth_type来解析包后面的内容
 typedef struct eth_hdr
 {
-// #define ETHERTYPE_IPv4 (0x0800)
-// #define ETHERTYPE_IPv6 (0x86DD)
-// #define ETHERTYPE_ARP (0x0806)
+    // #define ETHERTYPE_IPv4 (0x0800)
+    // #define ETHERTYPE_IPv6 (0x86DD)
+    // #define ETHERTYPE_ARP (0x0806)
 
     u_char dst_mac[6]; // 目标mac地址
     u_char src_mac[6]; // 源mac地址
@@ -71,7 +71,7 @@ typedef struct tcp_hdr
 // UDP头部,总长度8字节
 typedef struct udp_hdr
 {
-    u_short sport;     // 远端口号
+    u_short sport;     // 源端口号
     u_short dport;     // 目的端口号
     u_short tot_len;   // udp头部长度
     u_short check_sum; // 16位udp检验和
@@ -143,6 +143,33 @@ typedef struct arp_hdr
 
 } arp_hdr;
 
+typedef struct dns_hdr
+{
+    u_short id;       // 会话标识符
+    u_short flags;    // 标志
+    u_short qd_count; // 问题计数
+    u_short an_count; // 回答计数
+    u_short ns_count; // 权威服务器记录计数
+    u_short ar_count; // 附加记录计数
+} dns_hdr;
+
+typedef struct dns_question
+{
+    // char qname[255]; // 查询域名
+    u_short qtype;  // 查询类型
+    u_short qclass; // 查询类
+} dns_question;
+
+typedef struct dns_answer
+{
+    // char name[255];    // 资源记录的域名
+    u_short type;     // 资源记录类型
+    u_short class;    // 资源记录类
+    u_int ttl;        // 生存时间
+    u_short rdlength; // 数据长度
+    u_char dns_ip[4]; // 数据
+} dns_answer;
+
 extern int eth_len;
 extern int ipv4_len;
 extern int ipv6_len;
@@ -151,6 +178,7 @@ extern int ip_len;
 extern int tcp_len;
 extern int udp_len;
 extern int icmp_len;
+extern int dns_len;
 
 char *tcp_ftoa(int flag);
 
@@ -166,6 +194,6 @@ void printIPv6(const unsigned char *packet_content);
 
 void printARP(const unsigned char *packet_content);
 
-void printData(const unsigned char *packet_content,int length);
+void printData(const unsigned char *packet_content, int length);
 
- #endif
+#endif

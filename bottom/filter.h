@@ -11,8 +11,8 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <errno.h>
-#include <netpacket/packet.h>
-#include <net/if.h>
+#include <linux/if_packet.h>
+#include <linux/if.h>
 
 extern struct sock_filter all_code[];
 extern struct sock_filter ip_code[];

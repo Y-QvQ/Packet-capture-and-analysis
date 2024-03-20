@@ -1,6 +1,6 @@
 #include "filter.h"
 
-//tcpdump rule -dd生成bpf_code
+// tcpdump rule -dd生成bpf_code
 struct sock_filter all_code[] = {{0x6, 0, 0, 0x00040000}};
 struct sock_filter ip_code[] = {{0x28, 0, 0, 0x0000000c},
                                 {0x15, 0, 1, 0x00000800},
@@ -27,14 +27,14 @@ struct sock_filter tcp_code[] = {{0x28, 0, 0, 0x0000000c},
                                  {0x6, 0, 0, 0x00040000},
                                  {0x6, 0, 0, 0x00000000}};
 struct sock_filter udp_code[] = {{0x28, 0, 0, 0x0000000c},
-                                 {0x15, 0, 5, 0x000086dd},
-                                 {0x30, 0, 0, 0x00000014},
-                                 {0x15, 6, 0, 0x00000011},
-                                 {0x15, 0, 6, 0x0000002c},
-                                 {0x30, 0, 0, 0x00000036},
-                                 {0x15, 3, 4, 0x00000011},
-                                 {0x15, 0, 3, 0x00000800},
+                                 {0x15, 0, 2, 0x00000800},
                                  {0x30, 0, 0, 0x00000017},
+                                 {0x15, 6, 7, 0x00000011},
+                                 {0x15, 0, 6, 0x000086dd},
+                                 {0x30, 0, 0, 0x00000014},
+                                 {0x15, 3, 0, 0x00000011},
+                                 {0x15, 0, 3, 0x0000002c},
+                                 {0x30, 0, 0, 0x00000036},
                                  {0x15, 0, 1, 0x00000011},
                                  {0x6, 0, 0, 0x00040000},
                                  {0x6, 0, 0, 0x00000000}};
@@ -150,6 +150,11 @@ void load_bpf_filter(int sockfd, const char *rule, char *dev)
         bpf_program.len = 6;
         bpf_program.filter = icmp_code;
     }
+    // else if (strcmp(rule, "dns") == 0)
+    // {
+    //     bpf_program.len = 12;
+    //     bpf_program.filter = dns_code;
+    // }
     else
     {
         bpf_program.len = 6;

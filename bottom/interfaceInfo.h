@@ -9,7 +9,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <netinet/in.h>
-#include <net/if.h>
+#include <linux/if.h>
 #include <arpa/inet.h>
 #include <sys/ioctl.h>
 

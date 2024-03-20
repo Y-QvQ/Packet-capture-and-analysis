@@ -11,7 +11,6 @@ void *send_packets(void *args, unsigned char *packet, int send_count,int packet_
     if (sockfd < 0)
     {
         perror("socket");
-        pthread_exit(NULL);
     }
 
     bzero(&ifr, sizeof(ifr));
@@ -33,8 +32,8 @@ void *send_packets(void *args, unsigned char *packet, int send_count,int packet_
 
     char dst_ip[16];
 
-    sprintf(dst_ip, "%hhu.%hhu.%hhu.%hhu", thread_args->destination_ip[0], thread_args->destination_ip[1],
-            thread_args->destination_ip[2], thread_args->destination_ip[3]);
+    sprintf(dst_ip, "%hhu.%hhu.%hhu.%hhu", thread_args->ip[0], thread_args->ip[1],
+            thread_args->ip[2], thread_args->ip[3]);
 
     // Send packets
     int sent_count = 0;
@@ -46,7 +45,6 @@ void *send_packets(void *args, unsigned char *packet, int send_count,int packet_
         {
             perror("sendto");
             close(sockfd);
-            pthread_exit(NULL);
         }
         printf("Sent %d bytes to %s\n", ret, dst_ip);
 
@@ -63,6 +61,4 @@ void *send_packets(void *args, unsigned char *packet, int send_count,int packet_
 
     // Close socket
     close(sockfd);
-
-    pthread_exit(NULL);
 }

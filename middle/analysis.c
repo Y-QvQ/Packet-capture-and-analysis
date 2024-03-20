@@ -9,6 +9,7 @@ int ip_len = sizeof(ip_hdr);     // ip头的长度
 int tcp_len = sizeof(tcp_hdr);   // tcp头的长度
 int udp_len = sizeof(udp_hdr);   // udp头的长度
 int icmp_len = sizeof(icmp_hdr); // icmp头的长度
+int dns_len=sizeof(dns_hdr); // dns头的长度
 
 char *tcp_ftoa(int flag)
 {

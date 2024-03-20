@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <netinet/ether.h>
+#include <net/ethernet.h>
 #include "../middle/analysis.h"
 struct NetworkElement
 {

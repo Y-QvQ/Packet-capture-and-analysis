@@ -1,6 +1,6 @@
 #include "arp.h"
 
-arp_hdr *build_arp_request(unsigned char *sender_mac, unsigned char *sender_ip, unsigned char *target_mac, unsigned char *target_ip)
+arp_hdr *build_arp_response(unsigned char *sender_mac, unsigned char *sender_ip, unsigned char *target_mac, unsigned char *target_ip)
 {
        arp_hdr *arp = malloc(sizeof(arp_hdr));
        // 设置 ARP 头部字段
@@ -47,7 +47,7 @@ void send_arp(const char *data)
        }
 
        eth_hdr *eth = malloc(sizeof(eth_hdr) + sizeof(arp_hdr));
-       arp_hdr *arp = build_arp_request(sender_mac, sender_ip, target_mac, target_ip);
+       arp_hdr *arp = build_arp_response(sender_mac, sender_ip, target_mac, target_ip);
        memcpy(eth->src_mac, sender_mac, MAC_ADDR_LEN);
        memcpy(eth->dst_mac, target_mac, MAC_ADDR_LEN);
        eth->eth_type = htons(ETHERTYPE_ARP);
@@ -60,7 +60,7 @@ void send_arp(const char *data)
               return;
        }
 
-       memcpy(args->destination_ip, target_ip, IPv4_ADDR_LEN);
+       memcpy(args->ip, target_ip, IPv4_ADDR_LEN);
 
        unsigned char *packet = (unsigned char *)eth;
 

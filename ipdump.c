@@ -1,7 +1,4 @@
 #include "ipdump.h"
-#include "bottom/capture.h"
-#include "bottom/interfaceInfo.h"
-#include "upper/statistics.h"
 
 int main(int argc, char *argv[])
 {
@@ -18,8 +15,7 @@ int main(int argc, char *argv[])
     struct InterfaceInfo *interfaces = getInterfaces();
     struct InterfaceInfo *current = interfaces;
     interfaceName = current->name;
-
-    while ((opt = getopt(argc, argv, "hlfsaedi:r:xA:")) != -1)
+    while ((opt = getopt(argc, argv, "hlfsaedi:r:xA:D:")) != -1)
     {
         switch (opt)
         {
@@ -55,7 +51,11 @@ int main(int argc, char *argv[])
             break;
         case 'A':
             data = optarg;
-            atkType=1;
+            atkType = 1;
+            break;
+        case 'D':
+            data = optarg;
+            atkType = 2;
             break;
         default:
             // Handle invalid arguments or display usage
@@ -69,10 +69,15 @@ int main(int argc, char *argv[])
         {
             send_arp(data);
         }
+        else if (atkType == 2)
+        {
+            dealType = 12;
+            start_capture(interfaceName, "udp", dealType, displayEthernet, displayHexAscii, data);
+        }
     }
     else
     {
-        start_capture(interfaceName, rule, dealType, displayEthernet, displayHexAscii);
+        start_capture(interfaceName, rule, dealType, displayEthernet, displayHexAscii, NULL);
     }
 
     freeInterfaces(interfaces);
