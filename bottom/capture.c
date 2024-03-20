@@ -68,9 +68,10 @@ void typeAnalysis(const unsigned char *packet_content, int displayEthernet, int 
 void typeFind(const unsigned char *packet_content)
 {
     eth_hdr *ethernet_protocol = (eth_hdr *)packet_content;
-    ipv4_hdr *ipv4 = (ipv4_hdr *)(packet_content + eth_len);
+
     if (ntohs(ethernet_protocol->eth_type) == ETHERTYPE_IP)
     {
+        ipv4_hdr *ipv4 = (ipv4_hdr *)(packet_content + eth_len);
         initializeDiscoveredNetworkElements("findHost.txt");
         addNetworkElement(ethernet_protocol->src_mac, ipv4->sourceIP);
         addNetworkElement(ethernet_protocol->dst_mac, ipv4->destIP);

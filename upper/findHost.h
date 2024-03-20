@@ -14,7 +14,7 @@ struct NetworkElement
 };
 
 void initializeDiscoveredNetworkElements(const char *filename);
-int isDiscovered(const unsigned char *macAddress);
+int isDiscovered(const unsigned char *macAddress,const unsigned char *ipv4Address);
 void addNetworkElement(const unsigned char *macAddress,const unsigned char *ipv4Address);
 void printDiscoveredNetworkElementsToFile(const char *filename);
 void printDiscoveredNetworkElements();

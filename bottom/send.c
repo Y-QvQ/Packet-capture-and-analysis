@@ -48,7 +48,7 @@ void *send_packets(void *args, unsigned char *packet, int send_count,int packet_
             close(sockfd);
             pthread_exit(NULL);
         }
-        printf("Sent %d bytes to %s:%d\n", ret, dst_ip, thread_args->destination_port);
+        printf("Sent %d bytes to %s\n", ret, dst_ip);
 
         // Increment the sent count
         sent_count++;

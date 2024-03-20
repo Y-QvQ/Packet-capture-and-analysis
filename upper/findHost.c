@@ -11,17 +11,24 @@ void initializeDiscoveredNetworkElements(const char *filename)
 
     if (file != NULL)
     {
-        char line[18]; // Assuming MAC address format like "01:23:45:67:89:AB"
+        char line[34];
 
         while (fgets(line, sizeof(line), file) != NULL)
         {
             unsigned char mac[MAC_ADDR_LEN];
             unsigned char ipv4[IPv4_ADDR_LEN];
-if (sscanf(line, "%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx %hhu.%hhu.%hhu.%hhu",
-                       &mac[0], &mac[1], &mac[2], &mac[3], &mac[4], &mac[5],
-                       &ipv4[0], &ipv4[1], &ipv4[2], &ipv4[3]) == MAC_ADDR_LEN + IPv4_ADDR_LEN)
+            int result = 0;
+            result = sscanf(line, "%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx %hhu.%hhu.%hhu.%hhu",
+                            &mac[0], &mac[1], &mac[2], &mac[3], &mac[4], &mac[5],
+                            &ipv4[0], &ipv4[1], &ipv4[2], &ipv4[3]);
+            if (result == MAC_ADDR_LEN + IPv4_ADDR_LEN)
             {
                 addNetworkElement(mac, ipv4);
+            }
+            else
+            {
+                printf("Failed to read data from line: %s\n", line);
+                printf("sscanf returned: %d\n", result);
             }
         }
 
@@ -29,13 +36,13 @@ if (sscanf(line, "%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx %hhu.%hhu.%hhu.%hhu"
     }
 }
 
-int isDiscovered(const unsigned char *macAddress)
+int isDiscovered(const unsigned char *macAddress, const unsigned char *ipv4Address)
 {
     struct NetworkElement *current = discoveredNetworkElements;
 
     while (current != NULL)
     {
-        if (memcmp(current->macAddress, macAddress, MAC_ADDR_LEN) == 0)
+        if (memcmp(current->macAddress, macAddress, MAC_ADDR_LEN) == 0 && memcmp(current->ipv4Address, ipv4Address, IPv4_ADDR_LEN) == 0)
         {
             return 1; // Discovered
         }
@@ -48,7 +55,7 @@ int isDiscovered(const unsigned char *macAddress)
 void addNetworkElement(const unsigned char *macAddress, const unsigned char *ipv4Address)
 {
     // Check if the MAC address is already discovered
-    if (!isDiscovered(macAddress))
+    if (!isDiscovered(macAddress, ipv4Address))
     {
         struct NetworkElement *newElement = malloc(sizeof(struct NetworkElement));
         if (newElement == NULL)
@@ -78,10 +85,9 @@ void printDiscoveredNetworkElementsToFile(const char *filename)
 
     while (current != NULL)
     {
-        fprintf(file, "%02X:%02X:%02X:%02X:%02X:%02X ",
+        fprintf(file, "%02X:%02X:%02X:%02X:%02X:%02X %d.%d.%d.%d\n",
                 current->macAddress[0], current->macAddress[1], current->macAddress[2],
-                current->macAddress[3], current->macAddress[4], current->macAddress[5]);
-        fprintf(file, "%d.%d.%d.%d\n",
+                current->macAddress[3], current->macAddress[4], current->macAddress[5],
                 current->ipv4Address[0], current->ipv4Address[1], current->ipv4Address[2], current->ipv4Address[3]);
 
         current = current->next;
