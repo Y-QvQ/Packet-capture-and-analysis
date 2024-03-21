@@ -1,7 +1,7 @@
 #include "send.h"
 
 // Function to send packets
-void *send_packets(void *args, unsigned char *packet, int send_count,int packet_len)
+void send_packets(void *args, unsigned char *packet,const char *interface, int send_count,int packet_len)
 {
     threadArgs *thread_args = (threadArgs *)args;
     struct ifreq ifr;
@@ -14,7 +14,7 @@ void *send_packets(void *args, unsigned char *packet, int send_count,int packet_
     }
 
     bzero(&ifr, sizeof(ifr));
-    strcpy(ifr.ifr_name, "eth0");
+    strcpy(ifr.ifr_name, interface);
     if (-1 == ioctl(sockfd, SIOCGIFINDEX, &ifr))
     {
         close(sockfd);
@@ -59,6 +59,5 @@ void *send_packets(void *args, unsigned char *packet, int send_count,int packet_
         sleep(1);
     }
 
-    // Close socket
     close(sockfd);
 }

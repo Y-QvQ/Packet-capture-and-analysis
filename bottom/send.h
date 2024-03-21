@@ -30,6 +30,6 @@ typedef struct ThreadArgs
 
 
 // Function to send packets
-void *send_packets(void *args, unsigned char *packet, int send_count,int packet_len);
+void send_packets(void *args, unsigned char *packet,const char *interface, int send_count,int packet_len);
 
-#endif // SEND_H
+#endif 

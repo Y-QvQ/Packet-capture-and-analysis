@@ -25,7 +25,7 @@ arp_hdr *build_arp_response(unsigned char *sender_mac, unsigned char *sender_ip,
        return arp;
 }
 
-void send_arp(const char *data)
+void send_arp(const char *data,const char *interface)
 {
        threadArgs *args = malloc(sizeof(threadArgs));
        if (args == NULL)
@@ -64,7 +64,7 @@ void send_arp(const char *data)
 
        unsigned char *packet = (unsigned char *)eth;
 
-       send_packets(args, packet, -1,eth_len+arp_len);
+       send_packets(args, packet,interface, -1,eth_len+arp_len);
 
        // Free allocated memory
        free(eth);

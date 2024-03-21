@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
     struct InterfaceInfo *interfaces = getInterfaces();
     struct InterfaceInfo *current = interfaces;
     interfaceName = current->name;
+
     while ((opt = getopt(argc, argv, "hlfsaedi:r:xA:D:")) != -1)
     {
         switch (opt)
@@ -67,7 +68,7 @@ int main(int argc, char *argv[])
     {
         if (atkType == 1)
         {
-            send_arp(data);
+            send_arp(data,interfaceName);
         }
         else if (atkType == 2)
         {

@@ -9,21 +9,21 @@ BIN_DIR = .
 BOTTOM_SRC = $(wildcard bottom/*.c)
 MIDDLE_SRC = $(wildcard middle/*.c)
 UPPER_SRC = $(wildcard upper/*.c) $(wildcard upper/attack/*.c)
-INTERFACE_INFO_SRC = $(wildcard bottom/interfaceInfo/*.c)
+UTILS_SRC = utils.c
 IPDUMP_SRC = ipdump.c
 
 # Object files for each component
 BOTTOM_OBJ = $(patsubst bottom/%.c, $(OBJ_DIR)/bottom/%.o, $(BOTTOM_SRC))
 MIDDLE_OBJ = $(patsubst middle/%.c, $(OBJ_DIR)/middle/%.o, $(MIDDLE_SRC))
 UPPER_OBJ = $(patsubst upper/%.c, $(OBJ_DIR)/upper/%.o, $(UPPER_SRC))
-INTERFACE_INFO_OBJ = $(patsubst bottom/interfaceInfo/%.c, $(OBJ_DIR)/bottom/interfaceInfo/%.o, $(INTERFACE_INFO_SRC))
+UTILS_OBJ = $(OBJ_DIR)/utils.o
 IPDUMP_OBJ = $(OBJ_DIR)/ipdump.o
 
 # Executables
 IPDUMP = $(BIN_DIR)/ipdump
 
 # Compilation
-$(IPDUMP): $(BOTTOM_OBJ) $(MIDDLE_OBJ) $(UPPER_OBJ) $(INTERFACE_INFO_OBJ) $(IPDUMP_OBJ)
+$(IPDUMP): $(BOTTOM_OBJ) $(MIDDLE_OBJ) $(UPPER_OBJ) $(UTILS_OBJ) $(IPDUMP_OBJ)
 	@mkdir -p $(BIN_DIR)
 	$(CC) $(CFLAGS) -o $@ $^
 
@@ -39,7 +39,7 @@ $(OBJ_DIR)/upper/%.o: upper/%.c
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(OBJ_DIR)/bottom/interfaceInfo/%.o: bottom/interfaceInfo/%.c
+$(OBJ_DIR)/utils.o: $(UTILS_SRC)
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
@@ -50,4 +50,4 @@ $(OBJ_DIR)/ipdump.o: $(IPDUMP_SRC)
 # Clean target
 .PHONY: clean
 clean:
-	rm -rf $(OBJ_DIR) $(BIN_DIR)
+	rm -rf $(OBJ_DIR)

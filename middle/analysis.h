@@ -162,10 +162,10 @@ typedef struct dns_question
 
 typedef struct dns_answer
 {
-    // char name[255];    // 资源记录的域名
+    u_short pname;    // 指向question域名的指针
     u_short type;     // 资源记录类型
     u_short class;    // 资源记录类
-    u_int ttl;        // 生存时间
+    u_char ttl[4];        // 生存时间
     u_short rdlength; // 数据长度
     u_char dns_ip[4]; // 数据
 } dns_answer;
