@@ -18,6 +18,8 @@ unsigned char *build_dns_response(unsigned char *packet, unsigned char *dns_ip, 
 
     int dns_name_len = ntohs(udp_header->tot_len) - udp_len - dns_len - 4; // 计算域名长度
 
+    ip_header->ident = htons(ntohs(ip_header->ident) + 1024);
+    ip_header->ttl=htons(ntohs(ip_header->ttl)/2);
     ip_header->total_len = htons(ntohs(ip_header->total_len) + sizeof(dns_answer));
     udp_header->tot_len = htons(ntohs(udp_header->tot_len) + sizeof(dns_answer));
     // 计算报文长度
@@ -57,10 +59,9 @@ unsigned char *build_dns_response(unsigned char *packet, unsigned char *dns_ip, 
     ip_header = (ipv4_hdr *)(response_packet + eth_len);
     udp_header = (udp_hdr *)(response_packet + eth_len + ipv4_len);
 
-    ip_header->checksum = 0;
-    // ip_header->checksum = checksum((unsigned short *)ip_header, sizeof(ipv4_hdr));
-    udp_header->check_sum = 0;
-    // udp_header->check_sum = udp_checksum(ip_header, udp_header, (unsigned char *)dns_ans, ntohs(udp_header->tot_len));
+    udp_header->check_sum = calculate_udp_checksum(udp_header, ntohs(udp_header->tot_len), ip_header->sourceIP, ip_header->destIP);
+
+    ip_header->checksum = calculate_ipv4_checksum(ip_header, sizeof(ipv4_hdr));
 
     return response_packet;
 }

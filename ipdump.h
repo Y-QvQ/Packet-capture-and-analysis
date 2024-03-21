@@ -9,6 +9,7 @@
 #include "bottom/capture.h"
 #include "bottom/interfaceInfo.h"
 #include "upper/statistics.h"
+
 void printHelp();
 
 #endif
