@@ -52,3 +52,6 @@ ipdump -h
 
 6. List all available network interfaces:
 ipdump -l
+
+7. Enable attack mode with ARP spoofing on eth0:
+ipdump -x -A "fake_mac src_ip dst_mac dst_ip" -i eth0

@@ -97,6 +97,10 @@ void printHelp()
     printf("    -a, --all              Capture all traffic on the specified interface.\n");
     printf("    -e, --ethernet         Display Ethernet header information.\n");
     printf("    -d, --data             Display raw packet data in hexadecimal and ASCII.\n\n");
+    
+    printf("    -x                     Enable attack mode.\n");
+    printf("        -A                 Set ARP spoofing mode.\n");
+    // printf("        -D                 Set DNS spoofing mode.\n\n");
 
     printf("INTERFACE:\n");
     printf("    -i, --interface        Specify the network interface to capture traffic.\n");
@@ -130,4 +134,8 @@ void printHelp()
     printf("       ipdump -h\n\n");
     printf("    6. List all available network interfaces:\n");
     printf("       ipdump -l\n");
+    printf("    7. Enable attack mode with ARP spoofing on eth0:\n");
+    printf("       ipdump -x -A \"fake_mac src_ip dst_mac dst_ip\" -i eth0\n\n");
+    // printf("    8. Enable attack mode with DNS spoofing on eth1:\n");
+    // printf("       ipdump -x -D \"gateway_ip fake_ip\" -i eth1\n\n");
 }
